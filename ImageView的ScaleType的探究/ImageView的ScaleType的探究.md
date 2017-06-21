@@ -28,7 +28,7 @@ ScaleType 是 ImageView 的内部类，具有下面代码片中的八种状态�
 public enum ScaleType {
 
         /**
-         * Scale using the image matrix when drawing. The image matrix can be set using
+         * 绘制中缩放使用矩阵matrix来实现，设置矩阵可以使用这个方法
          * {@link ImageView#setImageMatrix(Matrix)}.
          */
         MATRIX      (0),
@@ -37,21 +37,15 @@ public enum ScaleType {
         FIT_CENTER  (3),
         FIT_END     (4),
         /**
-         * Center the image in the view, but perform no scaling.
+         * 图像在View的中心，但是不会执行缩放。
          */
         CENTER      (5),
         /**
-         * Scale the image uniformly (maintain the image's aspect ratio) so
-         * that both dimensions (width and height) of the image will be equal
-         * to or larger than the corresponding dimension of the view
-         * (minus padding). The image is then centered in the view.
+         * 对图像进行均匀缩放（保持图像的长宽比），使图像的两个尺寸（宽度和高度）等于或大于 View 的相应尺寸（减去padding）。图像也是在View的中心。
          */
         CENTER_CROP (6),
         /**
-         * Scale the image uniformly (maintain the image's aspect ratio) so
-         * that both dimensions (width and height) of the image will be equal
-         * to or less than the corresponding dimension of the view
-         * (minus padding). The image is then centered in the view.
+         * 对图像进行均匀缩放（保持图像的长宽比），使图像的两个尺寸（宽度和高度）等于或小于 View 的相应尺寸（减去padding）。图像也是在View的中心。
          */
         CENTER_INSIDE (7);
 
@@ -170,6 +164,22 @@ private void initImageView() {
  }
 ```
 
-我们在 initImageView 方法里发现 ImageView 的默认值是 FIT_CENTER，然后我们继续看 configBounds 方法，顾名思义，这个方法是用来配置 Drawable 的边界的，类似于裁剪图片，相关的应用方法就是 Drawable 的 setBounds 方法。configBounds 方法前面一段截至 if 判断的部分，声明了drawable尺寸 dwidth, dheight 和 View 的内容尺寸 vwidth, vheight。
+我们在 initImageView 方法里面有个重点就是 ImageView 对于 ScaleType 的默认值是 FIT_CENTER。
+
+然后我们继续看 configBounds 方法，顾名思义，这个方法是用来配置 Drawable 的边界的，根据 ImageView 的 setBounds 方法来看，这个方法是可以给 drawable 设置一个矩形区域，使其只能在这个矩形区域内进行绘制。
+
+接下来我们来看一下 configBounds 方法内部的实现。
+
+最前面一段截至 if 判断的部分，声明了drawable尺寸 dwidth, dheight 和 View 的内容尺寸 vwidth, vheight。然后设定了一个布尔值的变量 fits, 顾名思义就是这个值为真的时候 View 和 Drawable 正好完全贴合。 这里的 dwidth 和 dheight, 当 Drawable 资源为空的时候，这两个的值为 -1 ，所以对于变量 fit ，当不存在 Drawable 或者 Drawable 刚好与 View 内容尺寸完全一样时， 这个值为 true 。
+
+接下来有个 if 判断 ，当 资源的尺寸小于 0 时或者 ScaleType 为 FIT_XY 时，将 Drawable 绘制在这个(0, 0, vwidth, vheight)矩形区域里面，也就是 整个View 的视图，所以当我们回到那副图片，就不难发现为什么在 FIT_XY 情况下，不管图片大小如何，Drawable 都铺满了整个 View。
+
+在这个 if 之后的 else ，则马上就已另一种参数调用了 setBounds 方法，将 Drawable 绘制在 (0, 0, dwidth, dheight) 区域里面，这个区域也就是 Drawable 本身的尺寸大小，所以并不会对 Drawable产生什么拉伸的变化，所以在联系上面 FIT_XY 的情况和那幅图片，这个时候就不难理解为什么只有 FIT_XY 情况下 Drawable 是被拉伸的尺寸了，因为除了这一种情况，其他情况都没有强制将 Drawable 绘制在某个区域内，而 FIT_XY 情况则不管 View 的尺寸是多大，强行将 Drawable 画在整个的 View 上面。
+
+这个 else 里面有很多 if 分支，第一个描述了 MATRIX 的情况，我们留在最后说，先跳过。再往下是 fits 为 true 的情况，这个也没什么可以说的，因为这个情况不是 Drawable 为空就是 Drawable 和 View 完全贴合，直接平铺上就去就好了，还设置个屁的边界啊，我们也跳过。
+
+再往下就是 CENTER 系列的情况了，我们首先来看 CENTER
+
+
 
 ScaleType.MATRIX 这一种模式，和其他的七种都不太一样，
