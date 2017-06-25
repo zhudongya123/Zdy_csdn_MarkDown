@@ -207,4 +207,14 @@ private void initImageView() {
     mDrawMatrix.postTranslate(Math.round(dx), Math.round(dy));
 ```
 
+对于 CENTER_CROP 这种情况，执行了 setScale（缩放） 和 postTranslate（平移）这两项操作，其中值得注意的是，translate 有个前缀 post，代表后乘，这一点与 pre, 前乘对应起来，表示 translate 在 scale 之后进行。我们来看具体的转化数值。
+
+首先 if 里面其实就是 `dwidth \ dheight > vwidth \vheight` ,也就是比较 Drawable 和 View 的宽高比。
+
+- 程序执行 if 内的代码的时机：当 Drawable 的宽高比大于 View 的宽高比时（此时 Drawable 在<font color="#ff6c67">水平方向</font>应该比 View 更加的<font color="#ff6c67">细长</font>），此时缩放比例是 `vheight / dheight`，这样一缩放，Drawable 和 View 在高度上就完美贴合了。然后修改偏移量，我们可以看到修改的的是 dx，也就是 x 轴的偏移量，`(vwidth - dwidth * scale) * 0.5f`刚好是转换后 Drawable 的宽度尺寸与 View 宽度尺寸差值的一半。对于一张 Drawable 比 View 在水平方向更加细长的一张图片，经过贴合高度的缩放和 x 轴的 平移，Drawable 和 View 的中心再次共用了一个点，使其图片符合居中的定义。
+
+- 程序执行 else 内的代码的时机：当 Drawable 的宽高比小于 View 的宽高比时（此时 Drawable 在<font color="#ff6c67">垂直方向</font>应该比 View 更加的<font color="#ff6c67">细长</font>），此时缩放比例是 `vwidth / dwidth`，这样一缩放，Drawable 和 View 在宽度上就完美贴合了。然后修改偏移量，我们可以看到修改的的是 dy，也就是 y 轴的偏移量，`(vheight - dheight * scale) * 0.5f`刚好是转换后 Drawable 的高度尺寸与 View 高度尺寸差值的一半。对于一张 Drawable 比 View 在垂直方向更加细长的一张图片，经过贴合宽度的缩放和 y 轴的 平移，Drawable 和 View 的中心再次共用了一个点，使其图片符合居中的定义。
+
+所以，对于 CENTER_CROP 的总结，就是无论图片尺寸是大于 View 还是小于 View ，都会将其在于 View 的对比中，将 Drawable 和 View 高度比和宽度比其中较小的一个作为缩放比例，这样使得 Drawable 一定缩放至铺满整个 View，再经过水平方向或者垂直方向上的移动，使得 Drawable 的中心点和 View 的中心点重合。
+
 ScaleType.MATRIX 这一种模式，和其他的七种都不太一样，
