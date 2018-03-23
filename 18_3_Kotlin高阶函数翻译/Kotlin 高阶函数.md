@@ -42,11 +42,11 @@ Calls the specified function [block] with this value as its receiver and returns
 
 例子：
 ```kotlin
-        mRecyclerView.run {
-					layoutManager = GridLayoutManager(mBaseActivity, 2)
-					adapter = mAdapter
-					return@run "fuck"
-        }
+  mRecyclerView.run {
+		layoutManager = GridLayoutManager(mBaseActivity, 2)
+		adapter = mAdapter
+		return@run "fuck"
+  }
 ```
 
 ### with ###
@@ -64,11 +64,11 @@ Calls the specified function [block] with the given [receiver] as its receiver a
 
 例子：
 ```kotlin
-        with(mRecyclerView) {
-					layoutManager = GridLayoutManager(mBaseActivity, 2)
-					adapter = mAdapter
-					return@run "fuck"
-        }
+  with(mRecyclerView) {
+		layoutManager = GridLayoutManager(mBaseActivity, 2)
+		adapter = mAdapter
+		return@run "fuck"
+  }
 ```
 ### apply ###
 
@@ -84,10 +84,10 @@ apply 方法可以跟在任何对象之后调用，在闭包中可以不需要�
 
 例子：
 ```kotlin
-		var mRecyclerView = RecyclerView(mBaseActivity).apply {
-				layoutManager=LinearLayoutManager(mBaseActivity)
-				adapter=mAdapter
-		}
+	var mRecyclerView = RecyclerView(mBaseActivity).apply {
+			layoutManager=LinearLayoutManager(mBaseActivity)
+			adapter=mAdapter
+	}
 ```
 
 ### also ###
@@ -146,9 +146,9 @@ Returns this value if it satisfies the given [predicate] or null, if it doesn't.
 
 例子：
 ```kotlin
-		var takeIf = mRecyclerView.takeIf {
-			return@takeIf it.childCount != 0
-		}
+	var takeIf = mRecyclerView.takeIf {
+		return@takeIf it.childCount != 0
+	}
 ```
 
 takeif 方法可以根据闭包条件来确定返回值，不符合要求返回空。
@@ -168,8 +168,8 @@ Returns this value if it _does not_ satisfy the given [predicate] or null, if it
 例子：
 ```kotlin
 	var takeIf = mRecyclerView.takeUnless {
-      return@takeUnless it.childCount == 0
-		}
+		return@takeUnless it.childCount == 0
+	}
 ```
 
 效果与 takeIf 相反。
