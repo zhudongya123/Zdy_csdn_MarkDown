@@ -43,10 +43,9 @@ Calls the specified function [block] with this value as its receiver and returns
 例子：
 ```kotlin
         mRecyclerView.run {
-
-						layoutManager = GridLayoutManager(mBaseActivity, 2)
-						adapter = mAdapter
-            return@run "fuck"
+					layoutManager = GridLayoutManager(mBaseActivity, 2)
+					adapter = mAdapter
+					return@run "fuck"
         }
 ```
 
@@ -66,9 +65,9 @@ Calls the specified function [block] with the given [receiver] as its receiver a
 例子：
 ```kotlin
         with(mRecyclerView) {
-						layoutManager = GridLayoutManager(mBaseActivity, 2)
-						adapter = mAdapter
-	          return@run "fuck"
+					layoutManager = GridLayoutManager(mBaseActivity, 2)
+					adapter = mAdapter
+					return@run "fuck"
         }
 ```
 ### apply ###
@@ -85,8 +84,7 @@ apply 方法可以跟在任何对象之后调用，在闭包中可以不需要�
 
 例子：
 ```kotlin
-		var mRecyclerView = RecyclerView(mBaseActivity).also {
-
+		var mRecyclerView = RecyclerView(mBaseActivity).apply {
 				layoutManager=LinearLayoutManager(mBaseActivity)
 				adapter=mAdapter
 		}
@@ -107,11 +105,10 @@ also 与 apply 相似，只是在闭包中需要使用 it 来指代 T 对象。
 
 例子：
 ```kotlin
-		var mRecyclerView = RecyclerView(mBaseActivity).also {
-
-				it.layoutManager=LinearLayoutManager(mBaseActivity)
-				it.adapter=mAdapter
-		}
+	var mRecyclerView = RecyclerView(mBaseActivity).also {
+			it.layoutManager=LinearLayoutManager(mBaseActivity)
+			it.adapter=mAdapter
+	}
 ```
 
 ### let ###
@@ -127,11 +124,11 @@ Calls the specified function [block] with this value as its argument and returns
 
 例子：
 ```kotlin
-		var let = mRecyclerView.let {
-				it.layoutManager = LinearLayoutManager(mBaseActivity)
-				it.adapter = mAdapter
-				return@let "fuck"
-		}
+	var let = mRecyclerView.let {
+			it.layoutManager = LinearLayoutManager(mBaseActivity)
+			it.adapter = mAdapter
+			return@let "fuck"
+	}
 ```
 
 let 方法几乎是 also 与 run 方法的结合体，可以使用 it，同时可以指定返回值类型。
@@ -149,10 +146,9 @@ Returns this value if it satisfies the given [predicate] or null, if it doesn't.
 
 例子：
 ```kotlin
-				var takeIf = mRecyclerView.takeIf {
-            return@takeIf it.childCount != 0
-
-        }
+		var takeIf = mRecyclerView.takeIf {
+			return@takeIf it.childCount != 0
+		}
 ```
 
 takeif 方法可以根据闭包条件来确定返回值，不符合要求返回空。
@@ -171,9 +167,9 @@ Returns this value if it _does not_ satisfy the given [predicate] or null, if it
 
 例子：
 ```kotlin
-				var takeIf = mRecyclerView.takeUnless {
-            return@takeUnless it.childCount == 0
-        }
+	var takeIf = mRecyclerView.takeUnless {
+      return@takeUnless it.childCount == 0
+		}
 ```
 
 效果与 takeIf 相反。
@@ -190,9 +186,9 @@ Returns this value if it _does not_ satisfy the given [predicate] or null, if it
 
 例子：
 ```kotlin
-		repeat(mRecyclerView.childCount){
-        var view = mRecyclerView.getChildAt(it)
-    }
+	repeat(mRecyclerView.childCount){
+		var view = mRecyclerView.getChildAt(it)
+	}
 
 ```
 
